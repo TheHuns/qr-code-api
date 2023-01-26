@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
+import { QrCodesModule } from './qr-codes/qr-codes.module';
 
 @Module({
-  imports: [UsersModule],
+  imports: [UsersModule, QrCodesModule],
   controllers: [AppController],
   providers: [AppService],
 })

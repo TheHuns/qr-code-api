@@ -8,12 +8,14 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors({ origin: 'http://localhost:3000' });
+
   const config = new DocumentBuilder().setTitle('QR code api').build();
 
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('/', app, document);
 
-  await app.listen(3000);
+  await app.listen(5000);
 }
 bootstrap();

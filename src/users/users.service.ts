@@ -3,7 +3,7 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [{ id: 0, name: 'uno' }];
+  private users: User[] = [];
 
   findAll(): User[] {
     return this.users;
@@ -15,7 +15,7 @@ export class UsersService {
 
   createUser(name: string): User {
     const newUser: User = {
-      id: this.users.length,
+      id: Date.now(),
       name,
     };
 
