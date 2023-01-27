@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateQrCodeDto } from './dto/create-qr-code.dto';
-import { UpdateQrCodeDto } from './dto/update-qr-code.dto';
-
+import { ValidateCodeResponse } from './dto/validate-code-response.dto';
+import { QrCode } from './entities/qr-code.entity';
+const FIVE_MINUTES_MILLISECONDS = 300000;
 @Injectable()
 export class QrCodesService {
-  create(createQrCodeDto: CreateQrCodeDto) {
-    return 'This action adds a new qrCode';
+  private codes: QrCode[] = [];
+
+  createCode(createQrCodeDto: CreateQrCodeDto) {
+    const updatedCodes = this.codes.map((code: QrCode) => ({
+      ...code,
+      isValid: false,
+    }));
+
+    this.codes = [...updatedCodes, createQrCodeDto];
+    return createQrCodeDto;
   }
 
-  findAll() {
-    return `This action returns all qrCodes`;
+  findAll(): QrCode[] {
+    return this.codes;
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} qrCode`;
-  }
-
-  update(id: number, updateQrCodeDto: UpdateQrCodeDto) {
-    return `This action updates a #${id} qrCode`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} qrCode`;
+  validateCode(id: number): ValidateCodeResponse {
+    const code = this.codes.find((code) => code.createdAt === id);
+    if (
+      !code ||
+      !code.isValid ||
+      code.createdAt + FIVE_MINUTES_MILLISECONDS < Date.now()
+    )
+      return {
+        hasError: true,
+        errorMessage: 'Code not found or expired',
+        userId: null,
+      };
+    return { hasError: false, userId: code.userId, errorMessage: '' };
   }
 }
